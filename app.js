@@ -1,20 +1,35 @@
-
 const express = require("express");
-const path = require("path");  // You need to require the path module
+const path = require("node:path");
 const app = express();
+
+const assetsPath = path.join(__dirname, "public");
+app.use(express.static(assetsPath));
 
 const authorRouter = require("./routes/authorRouter");
 const bookRouter = require("./routes/bookRouter");
 
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+
 app.use('/author',authorRouter)
 app.use('/book',bookRouter)
 
-app.get('/', function(req, res) {
-    res.sendFile(path.join(__dirname, 'index.html'));
+// app.js
+
+const links = [
+  { href: "/", text: "Home" },
+  { href: "about", text: "About" },
+];
+
+const users = ["Rose", "Cake", "Biff"];
+
+app.get("/", (req, res) => {
+  res.render("index", { links: links, users: users });
 });
 
+
 app.get('/about', function(req, res) {
-    res.sendFile(path.join(__dirname, 'about.html'));
+  res.render("about", {specialOffer:"Mondaylight"});
 });
 
 app.get('/contact-me', function(req, res) {
